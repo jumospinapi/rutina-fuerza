@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi rutina de fuerza</title>
+  <!-- PWA e instalacion -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1E7B4F">
+  <!-- Soporte para iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Fuerza">
+  <link rel="apple-touch-icon" href="iconos/icono-192.png">
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="iconos/icono.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="iconos/icono-192.png">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Pantalla 1: Inicio -->
+    <section class="pantalla activa" id="pantalla-inicio" aria-labelledby="titulo-inicio">
+      <div class="inicio-contenido">
+        <h1 class="titulo-app" id="titulo-inicio">Mi rutina de fuerza</h1>
+
+        <!-- Fila de la semana L M X J V S D -->
+        <div class="semana-caja" aria-label="Seguimiento semanal">
+          <div class="semana-fila" id="semana-fila"></div>
+          <div class="semana-textos">
+            <p class="semana-resumen" id="semana-texto">Esta semana: 0 de 3</p>
+            <p class="semana-meta" id="semana-meta" style="display: none;">¡Meta de la semana cumplida!</p>
+            <p class="prueba-resumen-linea" id="inicio-prueba-resumen" style="display: none;"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inicio-acciones-centro">
+        <!-- Tarjeta prueba del mes (cuando pruebaPendiente es true) -->
+        <div class="tarjeta-prueba-mes" id="tarjeta-prueba-mes" style="display: none;">
+          <p class="tarjeta-prueba-texto">Es hora de tu prueba del mes (30 segundos)</p>
+          <button id="btn-hacer-prueba-mes" class="btn-secundario" type="button">Hacer la prueba</button>
+        </div>
+
+        <button id="btn-empezar" class="btn-principal btn-con-subtitulo" type="button">
+          <span id="btn-empezar-texto">Empezar</span>
+          <span class="btn-empezar-sub" id="inicio-detalle-nivel">Nivel 1 · unos 14 minutos</span>
+        </button>
+      </div>
+
+      <div class="inicio-pie">
+        <div class="inicio-enlaces">
+          <button id="btn-abrir-seguridad" class="enlace-btn" type="button">Seguridad</button>
+          <span class="separador-enlaces" aria-hidden="true">·</span>
+          <button id="btn-abrir-ajustes" class="enlace-btn" type="button">Ajustes</button>
+        </div>
+
+        <div class="caja-consejo-peso" id="caja-consejo-peso" style="display: none;">
+          💡 ¿Muy fácil? Baja todavía más despacio, contando 4.
+        </div>
+      </div>
+    </section>
+
+    <!-- Pantalla 2: Ejercicio -->
+    <section class="pantalla" id="pantalla-ejercicio" aria-label="Pantalla de ejercicio">
+      <div class="barra-superior">
+        <div class="barra-progreso-fondo" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="11">
+          <div class="barra-progreso-relleno" id="barra-progreso"></div>
+        </div>
+        <span class="texto-progreso" id="texto-progreso">1 de 11</span>
+        <button id="btn-cerrar-ejercicio" class="btn-cerrar" type="button" aria-label="Terminar la rutina">✕</button>
+      </div>
+
+      <div class="ejercicio-cuerpo">
+        <h2 class="titulo-ejercicio" id="ejercicio-titulo">Sentarse y pararse</h2>
+        <div class="etiqueta-pesa" id="ejercicio-etiqueta-pesa" style="display: none;">Pesa: 1 de 5 lb</div>
+
+        <!-- Contenedor para la animacion SVG (al menos 35% del alto) -->
+        <div class="caja-animacion" id="caja-animacion" aria-hidden="true"></div>
+
+        <div class="bloque-instrucciones">
+          <p class="texto-instruccion" id="ejercicio-instruccion">Instruccion del ejercicio</p>
+          <div class="aviso-ojo" id="ejercicio-ojo" style="display: none;">
+            ⚠ <span id="ejercicio-ojo-texto">Ojo con la postura</span>
+          </div>
+        </div>
+
+        <div class="bloque-contador">
+          <div class="contador-reps" id="ejercicio-contador-reps">Serie 1 de 1 · 8 veces</div>
+          <div class="contador-tiempo" id="ejercicio-contador-tiempo" style="display: none;">0:45</div>
+          <div class="contador-lado" id="ejercicio-contador-lado" style="display: none;">pie derecho</div>
+        </div>
+      </div>
+
+      <div class="acciones-ejercicio">
+        <button id="btn-principal-ejercicio" class="btn-principal" type="button">Listo</button>
+        <div class="fila-secundaria">
+          <button id="btn-atras-ejercicio" class="btn-secundario" type="button">← Atrás</button>
+          <button id="btn-saltar-ejercicio" class="btn-secundario" type="button">Saltar →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pantalla 3: Descanso -->
+    <section class="pantalla" id="pantalla-descanso" aria-label="Pantalla de descanso">
+      <div class="barra-superior">
+        <div style="flex: 1;"></div>
+        <button id="btn-cerrar-descanso" class="btn-cerrar" type="button" aria-label="Terminar la rutina">✕</button>
+      </div>
+
+      <div class="descanso-cuerpo">
+        <h2 class="titulo-descanso">Descansa</h2>
+        <div class="reloj-descanso" id="descanso-reloj" aria-live="polite">0:30</div>
+
+        <div class="siguiente-ejercicio-caja">
+          <div class="descanso-mini-figura" id="descanso-mini-figura" aria-hidden="true"></div>
+          <div class="siguiente-info">
+            <span class="siguiente-etiqueta">Ahora:</span>
+            <span class="siguiente-nombre" id="descanso-siguiente-nombre">Sentarse y pararse</span>
+            <span class="descanso-prepara-pesa" id="descanso-prepara-pesa" style="display: none;">Prepara: 1 pesa de 10 lb</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="acciones-ejercicio">
+        <button id="btn-seguir-ya" class="btn-principal btn-acento" type="button">Seguir ya</button>
+        <div class="fila-secundaria">
+          <button id="btn-atras-descanso" class="btn-secundario" type="button">← Atrás</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pantalla 4: Fin -->
+    <section class="pantalla" id="pantalla-fin" aria-label="Pantalla de finalizacion">
+      <div class="fin-cuerpo">
+        <h2 class="titulo-fin">¡Muy bien!<br>Terminaste.</h2>
+        <p class="texto-fin">Completaste la rutina de hoy.</p>
+
+        <div class="bloque-sensacion">
+          <h3 class="subtitulo-sensacion">¿Cómo te sentiste?</h3>
+          <div class="opciones-sensacion">
+            <button class="btn-sensacion" id="btn-sensacion-facil" type="button" data-sensacion="facil">
+              Fácil
+            </button>
+            <button class="btn-sensacion" id="btn-sensacion-bien" type="button" data-sensacion="bien">
+              Bien
+            </button>
+            <button class="btn-sensacion" id="btn-sensacion-dificil" type="button" data-sensacion="dificil">
+              Difícil
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fin-acciones">
+        <button id="btn-volver-inicio" class="btn-secundario" type="button">Volver al inicio</button>
+      </div>
+    </section>
+
+    <!-- Pantalla 5: Ajustes -->
+    <section class="pantalla" id="pantalla-ajustes" aria-label="Pantalla de ajustes">
+      <div class="ajustes-cabecera">
+        <button id="btn-volver-ajustes" class="btn-secundario btn-icono-texto" type="button">← Volver</button>
+        <h2 class="titulo-pantalla">Ajustes</h2>
+      </div>
+
+      <div class="ajustes-cuerpo">
+        <div class="seccion-ajuste">
+          <h3 class="subtitulo-ajuste">Nivel de dificultad</h3>
+          <div class="grilla-niveles" role="radiogroup" aria-label="Seleccion de nivel">
+            <button class="btn-opcion-nivel" id="btn-nivel-auto" type="button" data-nivel="auto">
+              <span class="nivel-nombre">Automático</span>
+              <span class="nivel-desc">según tus sesiones</span>
+            </button>
+            <button class="btn-opcion-nivel" id="btn-nivel-1" type="button" data-nivel="1">
+              <span class="nivel-nombre">Nivel 1</span>
+              <span class="nivel-desc">1 serie · 8 reps</span>
+            </button>
+            <button class="btn-opcion-nivel" id="btn-nivel-2" type="button" data-nivel="2">
+              <span class="nivel-nombre">Nivel 2</span>
+              <span class="nivel-desc">2 series · 8 reps</span>
+            </button>
+            <button class="btn-opcion-nivel" id="btn-nivel-3" type="button" data-nivel="3">
+              <span class="nivel-nombre">Nivel 3</span>
+              <span class="nivel-desc">2 series · 10 reps</span>
+            </button>
+            <button class="btn-opcion-nivel" id="btn-nivel-4" type="button" data-nivel="4">
+              <span class="nivel-nombre">Nivel 4</span>
+              <span class="nivel-desc">2 series · 10 reps</span>
+            </button>
+            <button class="btn-opcion-nivel" id="btn-nivel-5" type="button" data-nivel="5">
+              <span class="nivel-nombre">Nivel 5</span>
+              <span class="nivel-desc">2 series · 12 reps</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="seccion-ajuste">
+          <h3 class="subtitulo-ajuste">Prueba física</h3>
+          <button id="btn-abrir-prueba-ajustes" class="btn-secundario" type="button">
+            Hacer la prueba de la silla
+          </button>
+        </div>
+
+        <div class="seccion-ajuste">
+          <h3 class="subtitulo-ajuste">Tus datos</h3>
+          <button id="btn-borrar-registro" class="btn-secundario btn-alerta" type="button">
+            Borrar mi registro
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pantalla 6: Aviso de seguridad -->
+    <section class="pantalla" id="pantalla-aviso" aria-label="Aviso de seguridad">
+      <div class="aviso-contenido-scroll">
+        <h2 class="titulo-aviso">Aviso de seguridad</h2>
+
+        <div class="bloque-aviso-texto">
+          <h3 class="aviso-seccion-titulo">Antes de empezar</h3>
+          <ul class="aviso-lista">
+            <li>Consulta con tu médico antes de empezar esta rutina.</li>
+            <li>Usa zapatos cerrados y una silla firme, apoyada contra la pared.</li>
+            <li>Muévete despacio y respira. No aguantes el aire.</li>
+          </ul>
+
+          <h3 class="aviso-seccion-titulo">Detente y descansa si sientes:</h3>
+          <ul class="aviso-lista">
+            <li>dolor en el pecho, mareo o falta de aire fuerte;</li>
+            <li>un dolor agudo en alguna articulación o en la espalda;</li>
+            <li>sudor frío, temblor o mucha debilidad.</li>
+          </ul>
+
+          <p class="aviso-parrafo">Si no se pasa en unos minutos, busca ayuda médica.</p>
+          <p class="aviso-parrafo">Una molestia muscular leve al día siguiente es normal.</p>
+        </div>
+      </div>
+
+      <div class="aviso-acciones">
+        <button id="btn-entendido-aviso" class="btn-principal" type="button">Entendido</button>
+      </div>
+    </section>
+
+    <!-- Pantalla 7: Prueba de la silla (docs/03 §6, docs/02 §3) -->
+    <section class="pantalla" id="pantalla-prueba" aria-label="Prueba de la silla">
+      <!-- Sub-paso 1: Explicacion -->
+      <div class="prueba-subpaso" id="prueba-paso-explicacion">
+        <div class="barra-superior-prueba">
+          <div></div>
+          <button class="btn-cerrar" id="btn-cerrar-prueba-explicacion" aria-label="Cerrar prueba" type="button">✕</button>
+        </div>
+        <div class="prueba-cuerpo-scroll">
+          <h2 class="titulo-prueba">Prueba de la silla</h2>
+          <ul class="aviso-lista prueba-lista">
+            <li>Silla firme, sin brazos, apoyada contra la pared.</li>
+            <li>Siéntate en la mitad de la silla, con los pies en el piso y los brazos cruzados sobre el pecho.</li>
+            <li>Cuando suene, párate del todo y vuelve a sentarte, tantas veces como puedas en 30 segundos, sin correr.</li>
+            <li>Cuenta en voz alta cada vez que quedes de pie. Si alguien te acompaña, que cuente esa persona.</li>
+          </ul>
+          <div class="aviso-ojo prueba-ojo">⚠ Si te mareas o te duele algo, detente.</div>
+        </div>
+        <div class="prueba-acciones-fijas">
+          <button id="btn-empezar-prueba" class="btn-principal" type="button">Empezar la prueba</button>
+          <button id="btn-ahora-no-prueba" class="btn-secundario" type="button">Ahora no</button>
+        </div>
+      </div>
+
+      <!-- Sub-paso 2: Cuenta regresiva 3, 2, 1 -->
+      <div class="prueba-subpaso" id="prueba-paso-cuenta" style="display: none;">
+        <div class="barra-superior-prueba">
+          <div></div>
+          <button class="btn-cerrar" id="btn-cerrar-prueba-cuenta" aria-label="Cerrar prueba" type="button">✕</button>
+        </div>
+        <div class="prueba-cuenta-cuerpo">
+          <p class="prueba-cuenta-mensaje">Prepárate</p>
+          <div class="prueba-cuenta-numero" id="prueba-cuenta-numero">3</div>
+        </div>
+      </div>
+
+      <!-- Sub-paso 3: Temporizador 30s con animación -->
+      <div class="prueba-subpaso" id="prueba-paso-temporizador" style="display: none;">
+        <div class="barra-superior-prueba">
+          <span class="prueba-subtitulo-barra">30 segundos</span>
+          <button class="btn-cerrar" id="btn-cerrar-prueba-temporizador" aria-label="Cerrar prueba" type="button">✕</button>
+        </div>
+        <div class="prueba-temporizador-cuerpo">
+          <h2 class="titulo-ejercicio" style="margin-bottom: 2px;">Prueba de la silla</h2>
+          <p class="prueba-indicacion-activa">Brazos cruzados sobre el pecho</p>
+          <div class="caja-animacion" id="prueba-caja-animacion" aria-hidden="true"></div>
+          <div class="reloj-descanso" id="prueba-reloj">0:30</div>
+        </div>
+        <div class="prueba-acciones-fijas">
+          <button id="btn-pausa-prueba" class="btn-principal" type="button">Pausa</button>
+        </div>
+      </div>
+
+      <!-- Sub-paso 4: Conteo "¿Cuántas veces te paraste?" -->
+      <div class="prueba-subpaso" id="prueba-paso-conteo" style="display: none;">
+        <div class="barra-superior-prueba">
+          <div></div>
+          <button class="btn-cerrar" id="btn-cerrar-prueba-conteo" aria-label="Cerrar prueba" type="button">✕</button>
+        </div>
+        <div class="prueba-conteo-cuerpo">
+          <h2 class="titulo-prueba">¿Cuántas veces te paraste?</h2>
+          <div class="fila-contador-conteo">
+            <button id="btn-conteo-menos" class="btn-control-conteo" type="button" aria-label="Restar una vez">−</button>
+            <span id="prueba-valor-conteo" class="valor-conteo">10</span>
+            <button id="btn-conteo-mas" class="btn-control-conteo" type="button" aria-label="Sumar una vez">+</button>
+          </div>
+          <button id="btn-prueba-sin-manos" class="enlace-btn enlace-sin-manos" type="button">
+            No pude pararme sin usar las manos
+          </button>
+        </div>
+        <div class="prueba-acciones-fijas">
+          <button id="btn-guardar-prueba" class="btn-principal" type="button">Guardar</button>
+        </div>
+      </div>
+
+      <!-- Sub-paso 5: Resultado -->
+      <div class="prueba-subpaso" id="prueba-paso-resultado" style="display: none;">
+        <div class="barra-superior-prueba">
+          <div></div>
+          <div></div>
+        </div>
+        <div class="prueba-resultado-cuerpo">
+          <h2 class="titulo-fin" style="margin-bottom: 8px;">Resultado</h2>
+          <p class="resultado-hoy" id="prueba-resultado-hoy">Hoy: <strong>13 veces</strong></p>
+          <p class="resultado-comparativa" id="prueba-resultado-comparativa"></p>
+          <p class="resultado-esperado" id="prueba-resultado-esperado">Para tu edad lo esperado es entre 12 y 18</p>
+          <p class="resultado-nivel" id="prueba-resultado-nivel" style="display: none;"></p>
+        </div>
+        <div class="prueba-acciones-fijas">
+          <button id="btn-listo-prueba" class="btn-principal" type="button">Listo</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal de confirmacion para terminar rutina (boton ✕) -->
+    <div class="modal-overlay" id="modal-confirmar" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <div class="modal-caja">
+        <h3 class="modal-titulo" id="modal-titulo">¿Terminar la rutina?</h3>
+        <p class="modal-subtitulo">Si terminas antes, el día no se guardará como completado.</p>
+        <div class="modal-acciones">
+          <button id="btn-confirmar-si" class="btn-principal btn-peligro" type="button">Sí, terminar</button>
+          <button id="btn-confirmar-no" class="btn-secundario" type="button">Seguir entrenando</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmacion para marcar o desmarcar dia de la semana -->
+    <div class="modal-overlay" id="modal-dia" role="dialog" aria-modal="true" aria-labelledby="modal-dia-titulo">
+      <div class="modal-caja">
+        <h3 class="modal-titulo" id="modal-dia-titulo">¿Hiciste la rutina el martes?</h3>
+        <div class="modal-acciones">
+          <button id="btn-dia-si" class="btn-principal" type="button">Sí</button>
+          <button id="btn-dia-no" class="btn-secundario" type="button">No</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmacion 1 para borrar registro -->
+    <div class="modal-overlay" id="modal-borrar-1" role="dialog" aria-modal="true" aria-labelledby="modal-borrar-1-titulo">
+      <div class="modal-caja">
+        <h3 class="modal-titulo" id="modal-borrar-1-titulo">¿Borrar todo tu registro?</h3>
+        <p class="modal-subtitulo">Se borrarán los días marcados y tu nivel volverá a empezar.</p>
+        <div class="modal-acciones">
+          <button id="btn-borrar-1-si" class="btn-principal btn-peligro" type="button">Sí, continuar</button>
+          <button id="btn-borrar-1-no" class="btn-secundario" type="button">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmacion 2 para borrar registro (doble confirmacion) -->
+    <div class="modal-overlay" id="modal-borrar-2" role="dialog" aria-modal="true" aria-labelledby="modal-borrar-2-titulo">
+      <div class="modal-caja">
+        <h3 class="modal-titulo" id="modal-borrar-2-titulo">Esta acción no se puede deshacer</h3>
+        <p class="modal-subtitulo">¿Estás completamente seguro de borrar definitivamente?</p>
+        <div class="modal-acciones">
+          <button id="btn-borrar-2-si" class="btn-principal btn-peligro" type="button">Sí, borrar definitivamente</button>
+          <button id="btn-borrar-2-no" class="btn-secundario" type="button">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
