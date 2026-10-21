@@ -212,10 +212,11 @@ export function obtenerPesa(ejercicioId, nivel) {
 
 export function formatoEtiquetaPesa(pesaStr) {
   if (!pesaStr) return null;
+  // Frase de acción, más fácil de notar que "Pesa: 1 de 5 lb"
   if (pesaStr.startsWith('2')) {
-    return `Pesas: ${pesaStr}`;
+    return `Usa 2 pesas de ${pesaStr.replace(/^2 de\s*/, '')}`;
   }
-  return `Pesa: ${pesaStr}`;
+  return `Usa 1 pesa de ${pesaStr.replace(/^1 de\s*/, '')}`;
 }
 
 export function formatoPreparaPesa(pesaStr) {
