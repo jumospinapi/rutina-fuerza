@@ -1059,3 +1059,31 @@ button:active {
   line-height: 1.3;
 }
 
+
+/* Recuadro "Así se agarra" encima de la esquina de la animación (Pararse con la pesa) */
+.envoltura-animacion {
+  position: relative;
+  width: 100%;
+}
+
+.agarre-pesa {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 100px;
+  background-color: #FFFFFF;
+  border: 2px solid var(--borde);
+  border-radius: 12px;
+  padding: 4px 4px 3px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--texto);
+  line-height: 1.1;
+}
+
+.agarre-pesa svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}

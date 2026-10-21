@@ -65,6 +65,20 @@ function dibujarMancuerna(mano, lejana = false, grande = false) {
 }
 
 /**
+ * Mancuerna de pie contra el pecho (agarre "copa"), vista de perfil.
+ * La mano queda justo debajo del disco de arriba; se inclina con el torso.
+ */
+function dibujarMancuernaVertical(mano, inclinacion = 0) {
+  const c = COLORES.mancuerna;
+  const [x, y] = mano;
+  return `<g stroke="${c}" stroke-linecap="round" transform="rotate(${inclinacion.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})">
+    <line x1="${x.toFixed(1)}" y1="${(y - 6).toFixed(1)}" x2="${x.toFixed(1)}" y2="${(y + 13).toFixed(1)}" stroke-width="5"/>
+    <line x1="${(x - 7).toFixed(1)}" y1="${(y - 7).toFixed(1)}" x2="${(x + 7).toFixed(1)}" y2="${(y - 7).toFixed(1)}" stroke-width="6.5"/>
+    <line x1="${(x - 7).toFixed(1)}" y1="${(y + 14).toFixed(1)}" x2="${(x + 7).toFixed(1)}" y2="${(y + 14).toFixed(1)}" stroke-width="6.5"/>
+  </g>`;
+}
+
+/**
  * Renderiza el cuerpo completo del personaje a partir de una pose interpolada.
  */
 function dibujarCuerpo(p, utileria) {
@@ -129,7 +143,9 @@ function dibujarCuerpo(p, utileria) {
   s += `<circle cx="${p.mano[0].toFixed(1)}" cy="${p.mano[1].toFixed(1)}" r="6" fill="${COLORES.piel}" stroke="none"/>`;
 
   if (tieneMancuernaCerca) {
-    s += dibujarMancuerna(p.mano, false, esMancuernaGrande);
+    s += (utileria === 'silla-sentado-pesa')
+      ? dibujarMancuernaVertical(p.mano, p.t || 0)
+      : dibujarMancuerna(p.mano, false, esMancuernaGrande);
   }
 
   // 5. Cabeza de perfil mirando a la derecha

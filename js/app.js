@@ -24,6 +24,7 @@ import {
 } from './logica.js';
 import { Temporizador, activarAudio, formatearTiempo, reproducirPitido } from './temporizador.js';
 import { crearAnimador } from './figura.js';
+import { SVG_AGARRE_PESA, EJERCICIOS_CON_AGARRE } from './agarre.js';
 import { cargarRegistro, guardarRegistro, borrarRegistro, obtenerHoy } from './registro.js';
 
 // Estado de la aplicacion en memoria
@@ -108,6 +109,8 @@ const dom = {
   ejercicioTitulo: document.getElementById('ejercicio-titulo'),
   ejercicioEtiquetaPesa: document.getElementById('ejercicio-etiqueta-pesa'),
   cajaAnimacion: document.getElementById('caja-animacion'),
+  agarrePesa: document.getElementById('agarre-pesa'),
+  agarrePesaDibujo: document.getElementById('agarre-pesa-dibujo'),
   ejercicioInstruccion: document.getElementById('ejercicio-instruccion'),
   ejercicioOjo: document.getElementById('ejercicio-ojo'),
   ejercicioOjoTexto: document.getElementById('ejercicio-ojo-texto'),
@@ -466,6 +469,13 @@ function renderPaso(indice) {
       animadorEjercicio.setEjercicio(paso.ejercicioId);
     }
     animadorEjercicio.iniciar();
+
+    if (EJERCICIOS_CON_AGARRE.has(paso.ejercicioId)) {
+      if (!dom.agarrePesaDibujo.innerHTML) dom.agarrePesaDibujo.innerHTML = SVG_AGARRE_PESA;
+      dom.agarrePesa.style.display = 'block';
+    } else {
+      dom.agarrePesa.style.display = 'none';
+    }
 
     const numeroEjercicio = listaEjercicios.findIndex(e => e.id === ej.id) + 1;
     dom.textoProgreso.textContent = `${numeroEjercicio} de ${listaEjercicios.length}`;
