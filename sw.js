@@ -2,7 +2,7 @@
 // Service Worker para funcionamiento sin conexion (cache-first) e instalacion como PWA.
 // Cumple con docs/01 RF-10 y docs/02 §1 (D-03) y §8.
 
-const VERSION_CACHE = 'rutina-fuerza-v6';
+const VERSION_CACHE = 'rutina-fuerza-v7';
 
 const ARCHIVOS_CACHE = [
   './',
